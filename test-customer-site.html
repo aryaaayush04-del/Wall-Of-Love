@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acme SaaS</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+    header {
+      background-color: #ffffff;
+      padding: 20px 40px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 24px;
+      color: #4f46e5;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #4b5563;
+      font-weight: 500;
+    }
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
+    }
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .hero p {
+      font-size: 20px;
+      color: #4b5563;
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+    }
+    .hero button {
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    .hero button:hover {
+      background-color: #4338ca;
+    }
+    .testimonials {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .testimonials h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 60px;
+    }
+    iframe {
+      width: 100%;
+      min-height: 600px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">AcmeFlow</div>
+    <nav>
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Supercharge your workflow.</h1>
+    <p>AcmeFlow helps your team move faster and build better products. Join thousands of happy customers today.</p>
+    <button>Get Started for Free</button>
+  </section>
+
+  <section class="testimonials">
+    <h2>Loved by builders everywhere</h2>
+    <!-- The embed snippet -->
+    <iframe src="http://localhost:3000/embed/my-wall" width="100%" height="600" frameBorder="0" allowtransparency="true"></iframe>
+  </section>
+</body>
+</html>

@@ -1,0 +1,95 @@
+"use server"
+
+import { createClient } from "@/lib/supabase/server"
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
+
+export async function addTestimonial(formData: FormData) {
+  const name = formData.get("name") as string
+  const handle = formData.get("handle") as string
+  const text = formData.get("text") as string
+  const rating = parseInt(formData.get("rating") as string, 10)
+  
+  const platform = formData.get("platform") as string
+  const original_date = formData.get("original_date") as string
+  const post_url = formData.get("post_url") as string
+
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    throw new Error("Unauthorized")
+  }
+
+  const { error } = await supabase.from("testimonials").insert({
+    name,
+    handle: handle?.startsWith('@') ? handle : handle ? `@${handle}` : null,
+    text,
+    rating,
+    platform: platform || null,
+    original_date: original_date || null,
+    post_url: post_url || null,
+    user_id: user.id,
+  })
+
+  if (error) {
+    console.error("Failed to insert testimonial", error)
+    return { error: error.message }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/embed/my-wall")
+  return { success: true }
+}
+
+export async function deleteTestimonial(id: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase.from("testimonials").delete().eq("id", id)
+
+  if (error) {
+    console.error("Failed to delete testimonial", error)
+    return { error: error.message }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/embed/my-wall")
+  return { success: true }
+}
+
+export type UpdateTestimonialData = {
+  name?: string
+  handle?: string
+  text?: string
+  rating?: number
+  platform?: string
+  original_date?: string
+  post_url?: string
+}
+
+export async function updateTestimonial(id: string, data: UpdateTestimonialData) {
+  const supabase = await createClient()
+
+  const payload = { ...data }
+  if (payload.handle) {
+    payload.handle = payload.handle.startsWith('@') ? payload.handle : `@${payload.handle}`
+  }
+
+  const { error } = await supabase.from("testimonials").update(payload).eq("id", id)
+
+  if (error) {
+    console.error("Failed to update testimonial", error)
+    return { error: error.message }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/embed/my-wall")
+  return { success: true }
+}
+
+export async function signOutAction() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect('/login')
+}
