@@ -21,10 +21,13 @@ export default async function Home() {
   const { data: testimonials } = await supabase
     .from("testimonials")
     .select("*")
-    .eq('user_id', user.id)
+    // .eq('user_id', user.id) // Temporarily disabled for debugging
     .order("created_at", { ascending: false });
 
   const displayTestimonials = testimonials || [];
+
+  console.log("Current User ID:", user?.id);
+  console.log("Fetched Data:", testimonials);
 
   return (
     <div className="flex min-h-screen bg-gray-50/50">
