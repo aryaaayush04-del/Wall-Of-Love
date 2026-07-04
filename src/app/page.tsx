@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"; // Ensure fresh data on reload
+
 import { LayoutDashboard, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -7,8 +9,6 @@ import { CopyEmbedButton } from "@/components/copy-embed-button";
 import { AddTestimonialDialog } from "@/components/add-testimonial-dialog";
 import { DashboardTestimonialCard } from "@/components/dashboard-testimonial-card";
 import { signOutAction } from '@/app/actions';
-
-export const dynamic = "force-dynamic"; // Ensure fresh data on reload
 
 export default async function Home() {
   const supabase = await createClient();
