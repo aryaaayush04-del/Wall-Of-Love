@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, Star } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,8 @@ export function AddTestimonialDialog() {
   const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const router = useRouter();
+
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
     formData.append("rating", rating.toString());
@@ -40,6 +43,7 @@ export function AddTestimonialDialog() {
     } else {
       setOpen(false);
       setRating(5);
+      router.refresh();
     }
   };
 
