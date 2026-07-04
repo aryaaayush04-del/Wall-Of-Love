@@ -5,42 +5,48 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function addTestimonial(formData: FormData) {
-  const name = formData.get("name") as string
-  const handle = formData.get("handle") as string
-  const text = formData.get("text") as string
-  const rating = parseInt(formData.get("rating") as string, 10)
-  
-  const platform = formData.get("platform") as string
-  const original_date = formData.get("original_date") as string
-  const post_url = formData.get("post_url") as string
+  try {
+    const name = formData.get("name") as string
+    const handle = formData.get("handle") as string
+    const text = formData.get("text") as string
+    const rating = parseInt(formData.get("rating") as string, 10)
+    
+    const platform = formData.get("platform") as string
+    const original_date = formData.get("original_date") as string
+    const post_url = formData.get("post_url") as string
 
-  const supabase = await createClient()
+    const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    throw new Error("Unauthorized")
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    
+    if (authError || !user) {
+      console.error("Auth error:", authError)
+      return { error: "Unauthorized" }
+    }
+
+    const { error } = await supabase.from("testimonials").insert({
+      name,
+      handle: handle?.startsWith('@') ? handle : handle ? `@${handle}` : null,
+      text,
+      rating,
+      platform: platform || null,
+      original_date: original_date || null,
+      post_url: post_url || null,
+      user_id: user.id,
+    })
+
+    if (error) {
+      console.error("Failed to insert testimonial", error)
+      return { error: error.message }
+    }
+
+    revalidatePath("/")
+    revalidatePath("/embed/my-wall")
+    return { success: true }
+  } catch (err: any) {
+    console.error("Unexpected error in addTestimonial:", err)
+    return { error: err.message || "An unexpected error occurred" }
   }
-
-  const { error } = await supabase.from("testimonials").insert({
-    name,
-    handle: handle?.startsWith('@') ? handle : handle ? `@${handle}` : null,
-    text,
-    rating,
-    platform: platform || null,
-    original_date: original_date || null,
-    post_url: post_url || null,
-    user_id: user.id,
-  })
-
-  if (error) {
-    console.error("Failed to insert testimonial", error)
-    return { error: error.message }
-  }
-
-  revalidatePath("/")
-  revalidatePath("/embed/my-wall")
-  return { success: true }
 }
 
 export async function deleteTestimonial(id: string) {
