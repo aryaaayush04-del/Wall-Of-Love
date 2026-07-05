@@ -120,33 +120,33 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
 
   return (
     <>
-      <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3 transition-shadow hover:shadow-md relative">
+      <div className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-3 transition-shadow hover:shadow-md relative">
         {/* View Post Button placed absolutely in top right */}
         {t.post_url && (
           <a 
             href={t.post_url} 
             target="_blank" 
             rel="noreferrer" 
-            className="absolute top-5 right-5 flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors bg-gray-50 hover:bg-gray-100 px-2.5 py-1.5 rounded-full border border-gray-200 group"
+            className="absolute top-5 right-5 flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 group"
           >
-            <span className="group-hover:text-gray-900">{iconElement}</span>
+            <span className="group-hover:text-gray-900 dark:group-hover:text-white">{iconElement}</span>
             View Post
           </a>
         )}
         
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-            <User className="h-5 w-5 text-gray-500" />
+          <div className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+            <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
           </div>
           <div className="flex flex-col flex-1 min-w-0 pr-24">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 truncate">{t.name}</span>
+              <span className="font-semibold text-gray-900 dark:text-white truncate">{t.name}</span>
               {/* If no URL but platform is set, just show icon next to name */}
               {showPlatform && !t.post_url && (
                 <span title={t.platform || 'Platform'}>{iconElement}</span>
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-sm text-gray-500 truncate">
+            <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 truncate">
               {t.handle && <span className="truncate">{t.handle}</span>}
               {t.handle && formattedDate && <span>•</span>}
               {formattedDate && <span>{formattedDate}</span>}
@@ -158,14 +158,14 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
             <Star key={i} className={`h-4 w-4 ${i < t.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
           ))}
         </div>
-        <p className="text-gray-700 text-sm leading-relaxed">{t.text}</p>
+        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{t.text}</p>
         
-        <div className="mt-2 pt-3 border-t border-gray-100 flex items-center justify-end gap-1">
-          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-gray-500" onClick={() => setIsEditOpen(true)}>
+        <div className="mt-2 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-1">
+          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-gray-500 dark:text-gray-400" onClick={() => setIsEditOpen(true)}>
             <Edit className="h-3.5 w-3.5" />
             Edit
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={handleDelete} disabled={isDeleting}>
+          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleDelete} disabled={isDeleting}>
             <Trash2 className="h-3.5 w-3.5" />
             {isDeleting ? "..." : "Delete"}
           </Button>
