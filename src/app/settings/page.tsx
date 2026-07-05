@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/sidebar";
-import { updateProfile } from "@/app/actions";
+import { SettingsForm } from "@/components/settings-form";
 
 export const dynamic = "force-dynamic";
 
@@ -39,44 +39,7 @@ export default async function SettingsPage() {
               </div>
               
               <div className="p-6">
-                <form action={updateProfile} className="space-y-6">
-                  <div>
-                    <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      name="full_name"
-                      id="full_name"
-                      defaultValue={profile?.full_name || ''}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 sm:text-sm"
-                      placeholder="Jane Doe"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="website" className="block text-sm font-medium text-gray-700">
-                      Website
-                    </label>
-                    <input
-                      type="url"
-                      name="website"
-                      id="website"
-                      defaultValue={profile?.website || ''}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 sm:text-sm"
-                      placeholder="https://example.com"
-                    />
-                  </div>
-
-                  <div className="flex justify-end pt-4">
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-gray-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors"
-                    >
-                      Save Settings
-                    </button>
-                  </div>
-                </form>
+                <SettingsForm initialData={profile} />
               </div>
             </div>
           </div>
