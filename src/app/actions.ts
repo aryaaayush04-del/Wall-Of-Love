@@ -125,3 +125,34 @@ export async function updateProfile(formData: FormData) {
 
   revalidatePath("/settings")
 }
+
+export async function submitPublicTestimonial(formData: FormData, userId: string) {
+  try {
+    const name = formData.get("name") as string
+    const handle = formData.get("handle") as string
+    const text = formData.get("text") as string
+    const rating = parseInt(formData.get("rating") as string, 10)
+    
+    const supabase = await createClient()
+
+    const { error } = await supabase.from("testimonials").insert({
+      name,
+      handle: handle?.startsWith('@') ? handle : handle ? `@${handle}` : null,
+      text,
+      rating,
+      user_id: userId,
+    })
+
+    if (error) {
+      console.error("Failed to insert public testimonial", error)
+      return { error: error.message }
+    }
+
+    revalidatePath("/")
+    revalidatePath("/embed/my-wall")
+    return { success: true }
+  } catch (err: any) {
+    console.error("Unexpected error in submitPublicTestimonial:", err)
+    return { error: err.message || "An unexpected error occurred" }
+  }
+}
