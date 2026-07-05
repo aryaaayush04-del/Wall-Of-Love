@@ -24,6 +24,12 @@ export default async function Home() {
     .eq('user_id', user.id)
     .order("created_at", { ascending: false });
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq('id', user.id)
+    .maybeSingle();
+
   const displayTestimonials = testimonials || [];
 
   return (
@@ -45,6 +51,12 @@ export default async function Home() {
 
         {/* Content Area */}
         <div className="flex-1 p-8 overflow-auto bg-[#fafafa]">
+          {profile?.full_name && (
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
+              Hello, {profile.full_name}!
+            </h2>
+          )}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
             {displayTestimonials.length === 0 ? (
               <div className="col-span-full h-56 rounded-xl border border-dashed border-gray-300 flex flex-col items-center justify-center bg-white/50 text-gray-500 gap-2">
