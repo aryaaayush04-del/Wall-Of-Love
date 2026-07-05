@@ -99,3 +99,29 @@ export async function signOutAction() {
   await supabase.auth.signOut()
   redirect('/login')
 }
+
+export async function updateProfile(formData: FormData) {
+  const fullName = formData.get("full_name") as string
+  const website = formData.get("website") as string
+
+  const supabase = await createClient()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    console.error("Unauthorized");
+    return;
+  }
+
+  const { error } = await supabase.from("profiles").upsert({
+    id: user.id,
+    full_name: fullName || null,
+    website: website || null,
+  })
+
+  if (error) {
+    console.error("Failed to update profile", error)
+    return;
+  }
+
+  revalidatePath("/settings")
+}
