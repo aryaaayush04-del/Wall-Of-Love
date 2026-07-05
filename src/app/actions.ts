@@ -116,7 +116,7 @@ export async function updateProfile(formData: FormData) {
     id: user.id,
     full_name: fullName || null,
     website: website || null,
-  })
+  }, { onConflict: 'id' })
 
   if (error) {
     console.error("Failed to update profile", error)

@@ -17,7 +17,7 @@ export default async function SettingsPage() {
     .from("profiles")
     .select("*")
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   return (
     <div className="flex min-h-screen bg-gray-50/50">
