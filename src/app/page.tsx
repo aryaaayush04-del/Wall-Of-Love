@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CopyEmbedButton } from "@/components/copy-embed-button";
 import { AddTestimonialDialog } from "@/components/add-testimonial-dialog";
 import { DashboardTestimonialCard } from "@/components/dashboard-testimonial-card";
+import { CopyCollectionLink } from "@/components/copy-collection-link";
 import { Sidebar } from '@/components/sidebar';
 import { signOutAction } from '@/app/actions';
 export default async function Home() {
@@ -56,6 +57,8 @@ export default async function Home() {
               Hello, {profile.full_name}!
             </h2>
           )}
+          
+          <CopyCollectionLink userId={user.id} />
           
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
             {displayTestimonials.length === 0 ? (
