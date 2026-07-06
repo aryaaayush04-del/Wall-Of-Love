@@ -76,7 +76,7 @@ export default async function EmbedWall(props: Props) {
     <>
       <style>{'html, body { background: transparent !important; color-scheme: light !important; } .chunky-font { font-family: "Arial Black", Impact, sans-serif; }'}</style>
       <div className="p-4 !bg-transparent min-h-screen">
-        <h2 className="text-center mb-10 text-white font-black text-4xl md:text-5xl tracking-normal [-webkit-text-stroke:2px_black] chunky-font">
+        <h2 className="text-center mb-10 text-white font-black text-3xl md:text-4xl tracking-normal [-webkit-text-stroke:2px_black] chunky-font">
           {profile?.widget_title || 'What people are saying'}
         </h2>
         {displayTestimonials.length === 0 ? (
