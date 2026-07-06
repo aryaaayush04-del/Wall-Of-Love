@@ -75,12 +75,21 @@ export default async function EmbedWall(props: Props) {
   return (
     <>
       <style>{`
-        body {
+        html, body {
           background-color: transparent !important;
+          background: transparent !important;
+        }
+        .adaptive-title {
+          color: #0f172a;
+        }
+        @media (prefers-color-scheme: dark) {
+          .adaptive-title {
+            color: #f8fafc;
+          }
         }
       `}</style>
       <div className="p-4 bg-transparent min-h-screen">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 text-gray-900 tracking-tight">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 tracking-tight adaptive-title">
           {profile?.widget_title || 'What people are saying'}
         </h2>
         {displayTestimonials.length === 0 ? (
