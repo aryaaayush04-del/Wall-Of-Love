@@ -6,6 +6,7 @@ import { updateProfile } from '@/app/actions';
 interface ProfileData {
   full_name?: string | null;
   website?: string | null;
+  widget_title?: string | null;
 }
 
 export function SettingsForm({ initialData }: { initialData: ProfileData | null }) {
@@ -55,6 +56,20 @@ export function SettingsForm({ initialData }: { initialData: ProfileData | null 
           defaultValue={initialData?.website || ''}
           className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:border-gray-900 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-gray-100 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
           placeholder="https://example.com"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="widget_title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Widget Title
+        </label>
+        <input
+          type="text"
+          name="widget_title"
+          id="widget_title"
+          defaultValue={initialData?.widget_title || ''}
+          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:border-gray-900 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-gray-100 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
+          placeholder="What people are saying"
         />
       </div>
 

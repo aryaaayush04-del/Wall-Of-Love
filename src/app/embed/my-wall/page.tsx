@@ -64,6 +64,12 @@ export default async function EmbedWall(props: Props) {
 
   const { data: testimonials } = await query;
 
+  let profile = null;
+  if (userId) {
+    const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
+    profile = data;
+  }
+
   const displayTestimonials = testimonials || [];
 
   return (
@@ -74,6 +80,9 @@ export default async function EmbedWall(props: Props) {
         }
       `}</style>
       <div className="p-4 bg-transparent min-h-screen">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 text-gray-900 tracking-tight">
+          {profile?.widget_title || 'What people are saying'}
+        </h2>
         {displayTestimonials.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
             <div className="bg-gray-100 rounded-full p-4 mb-4">
@@ -115,7 +124,7 @@ export default async function EmbedWall(props: Props) {
                 <CardWrapper
                   key={t.id}
                   {...wrapperProps}
-                  className={`relative break-inside-avoid bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3 transition-shadow hover:shadow-md overflow-hidden block ${isClickable ? 'group cursor-pointer' : ''}`}
+                  className={`relative break-inside-avoid bg-white p-6 rounded-2xl border border-gray-200/60 shadow-sm flex flex-col gap-4 transition-all hover:shadow-md hover:border-gray-300 overflow-hidden block ${isClickable ? 'group cursor-pointer' : ''}`}
                 >
                   {isClickable && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">

@@ -103,6 +103,7 @@ export async function signOutAction() {
 export async function updateProfile(formData: FormData) {
   const fullName = formData.get("full_name") as string
   const website = formData.get("website") as string
+  const widgetTitle = formData.get("widget_title") as string
 
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -116,6 +117,7 @@ export async function updateProfile(formData: FormData) {
     id: user.id,
     full_name: fullName || null,
     website: website || null,
+    widget_title: widgetTitle || null,
   }, { onConflict: 'id' })
 
   if (error) {
