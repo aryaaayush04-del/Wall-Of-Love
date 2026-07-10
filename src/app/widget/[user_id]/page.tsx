@@ -1,5 +1,8 @@
-import { Star, User, MessageSquare } from 'lucide-react';
+import { Star, User, MessageSquare } from "lucide-react";
+import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+
+// ─── SVG Icons (kept inline to avoid client-component dependencies) ──────────
 
 function TwitterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -59,6 +62,7 @@ const UUID_RE =
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+/** Shape of each testimonial after column stripping. */
 type PublicTestimonial = {
   id: string;
   name: string;
@@ -75,50 +79,42 @@ type PublicTestimonial = {
 
 export const dynamic = "force-dynamic";
 
-type Props = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+export default async function WidgetPage({
+  params,
+}: {
+  params: Promise<{ user_id: string }>;
+}) {
+  const { user_id } = await params;
 
-export default async function EmbedWall(props: Props) {
-  const searchParams = await props.searchParams;
-  const userId = searchParams.user as string | undefined;
-
-  // Validate user_id is a real UUID if provided
-  if (userId && !UUID_RE.test(userId)) {
-    return (
-      <div className="p-4 text-center text-gray-500">
-        Invalid user identifier.
-      </div>
-    );
+  // ── 1. Validate the user_id is a real UUID to prevent injection ──────────
+  if (!user_id || !UUID_RE.test(user_id)) {
+    notFound();
   }
 
-  // Use admin client (service_role) — bypasses RLS
+  // ── 2. Create an admin client (service_role — bypasses RLS) ──────────────
   const supabase = createAdminClient();
-  
-  let query = supabase
+
+  // ── 3. Fetch ONLY approved testimonials with explicit column allowlist ────
+  const { data: testimonials, error: testimonialsError } = await supabase
     .from("testimonials")
     .select(TESTIMONIAL_PUBLIC_COLUMNS)
-    .eq("is_approved", true) // ⛔ Only approved testimonials
+    .eq("user_id", user_id)
+    .eq("is_approved", true) // ⛔ Never serve pending / rejected drafts
     .order("created_at", { ascending: false });
 
-  if (userId) {
-    query = query.eq('user_id', userId);
+  if (testimonialsError) {
+    console.error("Widget: failed to fetch testimonials", testimonialsError);
   }
 
-  const { data: testimonials } = await query;
+  // ── 4. Fetch profile (widget_title only) ─────────────────────────────────
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select(PROFILE_PUBLIC_COLUMNS)
+    .eq("id", user_id)
+    .maybeSingle();
 
-  let profile = null;
-  if (userId) {
-    const { data } = await supabase
-      .from('profiles')
-      .select(PROFILE_PUBLIC_COLUMNS)
-      .eq('id', userId)
-      .maybeSingle();
-    profile = data;
-  }
-
-  // Build a sanitised array — guarantee no extra properties leak
-  const displayTestimonials: PublicTestimonial[] = (testimonials ?? []).map(
+  // ── 5. Build a sanitised array — guarantee no extra properties leak ──────
+  const safeTestimonials: PublicTestimonial[] = (testimonials ?? []).map(
     (t) => ({
       id: t.id,
       name: t.name,
@@ -132,74 +128,105 @@ export default async function EmbedWall(props: Props) {
     })
   );
 
+  // ── 6. Render ────────────────────────────────────────────────────────────
   return (
     <>
-      <style>{'html, body { background: transparent !important; color-scheme: light !important; }'}</style>
+      <style>
+        {
+          "html, body { background: transparent !important; color-scheme: light !important; }"
+        }
+      </style>
       <div className="p-4 !bg-transparent min-h-screen">
         <h2 className="text-center mb-10 text-white font-extrabold text-2xl tracking-tight [text-shadow:_0_2px_4px_rgb(0_0_0_/_80%)]">
-          {profile?.widget_title || 'What people are saying'}
+          {profile?.widget_title || "What people are saying"}
         </h2>
-        {displayTestimonials.length === 0 ? (
+
+        {safeTestimonials.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
             <div className="bg-gray-100 rounded-full p-4 mb-4">
               <Star className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900">No testimonials found yet</h3>
-            <p className="text-gray-500 mt-2 max-w-sm">When new testimonials are added to your wall of love, they will appear right here.</p>
+            <h3 className="text-lg font-medium text-gray-900">
+              No testimonials found yet
+            </h3>
+            <p className="text-gray-500 mt-2 max-w-sm">
+              When new testimonials are added to your wall of love, they will
+              appear right here.
+            </p>
           </div>
         ) : (
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {displayTestimonials.map((t) => {
+            {safeTestimonials.map((t) => {
               // Format date cleanly if it exists
               let formattedDate: string | null = null;
               if (t.original_date) {
                 try {
                   const date = new Date(t.original_date);
-                  // Use UTC to prevent off-by-one errors from local timezone parsing if it's just a YYYY-MM-DD string
-                  const timeZone = t.original_date.includes('T') ? undefined : 'UTC';
-                  formattedDate = date.toLocaleDateString('en-US', { timeZone, month: 'short', day: 'numeric', year: 'numeric' });
+                  const timeZone = t.original_date.includes("T")
+                    ? undefined
+                    : "UTC";
+                  formattedDate = date.toLocaleDateString("en-US", {
+                    timeZone,
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  });
                 } catch {
                   // Ignore invalid dates
                 }
               }
 
               // Determine platform icon
-              let IconComponent: React.ComponentType<React.SVGProps<SVGSVGElement>> = MessageSquare;
-              if (t.platform === 'X/Twitter') IconComponent = TwitterIcon;
-              if (t.platform === 'LinkedIn') IconComponent = LinkedinIcon;
+              let IconComponent: React.ComponentType<
+                React.SVGProps<SVGSVGElement>
+              > = MessageSquare;
+              if (t.platform === "X/Twitter") IconComponent = TwitterIcon;
+              if (t.platform === "LinkedIn") IconComponent = LinkedinIcon;
 
               const showPlatform = t.platform || t.post_url;
-              const iconElement = <IconComponent className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0" />;
+              const iconElement = (
+                <IconComponent className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0" />
+              );
 
               const isClickable = Boolean(t.post_url);
-              const CardWrapper: any = isClickable ? 'a' : 'div';
-              const wrapperProps = isClickable ? { href: t.post_url, target: '_blank', rel: 'noreferrer' } : {};
+              const CardWrapper: any = isClickable ? "a" : "div";
+              const wrapperProps = isClickable
+                ? { href: t.post_url, target: "_blank", rel: "noreferrer" }
+                : {};
 
               return (
                 <CardWrapper
                   key={t.id}
                   {...wrapperProps}
-                  className={`relative break-inside-avoid bg-white p-6 rounded-2xl border border-gray-200/60 shadow-sm flex flex-col gap-4 transition-all hover:shadow-md hover:border-gray-300 overflow-hidden block ${isClickable ? 'group cursor-pointer' : ''}`}
+                  className={`relative break-inside-avoid bg-white p-6 rounded-2xl border border-gray-200/60 shadow-sm flex flex-col gap-4 transition-all hover:shadow-md hover:border-gray-300 overflow-hidden block ${isClickable ? "group cursor-pointer" : ""}`}
                 >
                   {isClickable && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                      <span className="text-white font-medium">View Original Post</span>
+                      <span className="text-white font-medium">
+                        View Original Post
+                      </span>
                     </div>
                   )}
-                  
+
                   <div className="flex items-start gap-3">
                     <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
                       <User className="h-5 w-5 text-gray-500" />
                     </div>
                     <div className="flex flex-col flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-semibold text-gray-900 truncate">{t.name}</span>
+                        <span className="font-semibold text-gray-900 truncate">
+                          {t.name}
+                        </span>
                         {showPlatform && (
-                          <span title={t.platform || 'Platform'}>{iconElement}</span>
+                          <span title={t.platform || "Platform"}>
+                            {iconElement}
+                          </span>
                         )}
                       </div>
                       <div className="flex items-center gap-1.5 text-sm text-gray-500 truncate">
-                        {t.handle && <span className="truncate">{t.handle}</span>}
+                        {t.handle && (
+                          <span className="truncate">{t.handle}</span>
+                        )}
                         {t.handle && formattedDate && <span>•</span>}
                         {formattedDate && <span>{formattedDate}</span>}
                       </div>
@@ -207,10 +234,15 @@ export default async function EmbedWall(props: Props) {
                   </div>
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`h-4 w-4 ${i < t.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < t.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200"}`}
+                      />
                     ))}
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed">{t.text}</p>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {t.text}
+                  </p>
                 </CardWrapper>
               );
             })}
