@@ -31,6 +31,7 @@ export async function submitTestimonial(formData: FormData) {
       text: testimonial,
       rating,
       user_id,
+      is_approved: false, // Client submissions require owner approval
     })
 
     if (error) {

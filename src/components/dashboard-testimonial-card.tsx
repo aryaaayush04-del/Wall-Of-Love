@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { Star, User, MessageSquare, Trash2, Edit } from 'lucide-react';
-import { deleteTestimonial, updateTestimonial } from '@/app/actions';
+import { Star, User, MessageSquare, Trash2, Edit, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { deleteTestimonial, updateTestimonial, approveTestimonial, rejectTestimonial } from '@/app/actions';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -68,12 +68,32 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editRating, setEditRating] = useState(t.rating || 5);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this testimonial?")) return;
     setIsDeleting(true);
     await deleteTestimonial(t.id);
     setIsDeleting(false);
+  };
+
+  const handleApprove = async () => {
+    setIsApproving(true);
+    const result = await approveTestimonial(t.id);
+    setIsApproving(false);
+    if (result?.error) {
+      alert("Error: " + result.error);
+    }
+  };
+
+  const handleReject = async () => {
+    setIsRejecting(true);
+    const result = await rejectTestimonial(t.id);
+    setIsRejecting(false);
+    if (result?.error) {
+      alert("Error: " + result.error);
+    }
   };
 
   const handleEditSubmit = async (formData: FormData) => {
@@ -118,9 +138,25 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
 
   const dateValue = t.original_date ? t.original_date.split('T')[0] : '';
 
+  const isApproved = t.is_approved === true;
+  const isPending = t.is_approved === false || t.is_approved === null || t.is_approved === undefined;
+
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-3 transition-shadow hover:shadow-md relative">
+      <div className={`bg-white dark:bg-gray-800 p-5 rounded-xl border shadow-sm flex flex-col gap-3 transition-shadow hover:shadow-md relative ${isPending ? 'border-amber-300 dark:border-amber-600' : 'border-gray-200 dark:border-gray-700'}`}>
+        {/* Approval Status Badge */}
+        {isPending ? (
+          <div className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 rounded-full w-fit border border-amber-200 dark:border-amber-700">
+            <Clock className="h-3 w-3" />
+            Pending Approval
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-full w-fit border border-emerald-200 dark:border-emerald-700">
+            <CheckCircle2 className="h-3 w-3" />
+            Approved
+          </div>
+        )}
+
         {/* View Post Button placed absolutely in top right */}
         {t.post_url && (
           <a 
@@ -160,15 +196,45 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
         </div>
         <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{t.text}</p>
         
-        <div className="mt-2 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-1">
-          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-gray-500 dark:text-gray-400" onClick={() => setIsEditOpen(true)}>
-            <Edit className="h-3.5 w-3.5" />
-            Edit
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleDelete} disabled={isDeleting}>
-            <Trash2 className="h-3.5 w-3.5" />
-            {isDeleting ? "..." : "Delete"}
-          </Button>
+        <div className="mt-2 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between gap-1">
+          {/* Approval Actions — left side */}
+          <div className="flex items-center gap-1">
+            {isPending ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                onClick={handleApprove}
+                disabled={isApproving}
+              >
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                {isApproving ? "..." : "Approve"}
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                onClick={handleReject}
+                disabled={isRejecting}
+              >
+                <XCircle className="h-3.5 w-3.5" />
+                {isRejecting ? "..." : "Unapprove"}
+              </Button>
+            )}
+          </div>
+
+          {/* Edit & Delete — right side */}
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-gray-500 dark:text-gray-400" onClick={() => setIsEditOpen(true)}>
+              <Edit className="h-3.5 w-3.5" />
+              Edit
+            </Button>
+            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleDelete} disabled={isDeleting}>
+              <Trash2 className="h-3.5 w-3.5" />
+              {isDeleting ? "..." : "Delete"}
+            </Button>
+          </div>
         </div>
       </div>
 

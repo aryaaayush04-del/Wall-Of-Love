@@ -33,6 +33,7 @@ export async function addTestimonial(formData: FormData) {
       original_date: original_date || null,
       post_url: post_url || null,
       user_id: user.id,
+      is_approved: true, // Owner-created testimonials are auto-approved
     })
 
     if (error) {
@@ -143,6 +144,7 @@ export async function submitPublicTestimonial(formData: FormData, userId: string
       text,
       rating,
       user_id: userId,
+      is_approved: false, // Client submissions require owner approval
     })
 
     if (error) {
@@ -157,4 +159,40 @@ export async function submitPublicTestimonial(formData: FormData, userId: string
     console.error("Unexpected error in submitPublicTestimonial:", err)
     return { error: err.message || "An unexpected error occurred" }
   }
+}
+
+export async function approveTestimonial(id: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from("testimonials")
+    .update({ is_approved: true })
+    .eq("id", id)
+
+  if (error) {
+    console.error("Failed to approve testimonial", error)
+    return { error: error.message }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/embed/my-wall")
+  return { success: true }
+}
+
+export async function rejectTestimonial(id: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from("testimonials")
+    .update({ is_approved: false })
+    .eq("id", id)
+
+  if (error) {
+    console.error("Failed to reject testimonial", error)
+    return { error: error.message }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/embed/my-wall")
+  return { success: true }
 }
