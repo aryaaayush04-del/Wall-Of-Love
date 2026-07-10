@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { CopyEmbedButton } from "@/components/copy-embed-button";
 import { AddTestimonialDialog } from "@/components/add-testimonial-dialog";
 import { DashboardTestimonialCard } from "@/components/dashboard-testimonial-card";
@@ -19,11 +20,18 @@ export default async function Home() {
     redirect('/login');
   }
 
-  const { data: testimonials } = await supabase
+  // Use admin client to bypass RLS for fetching the owner's own testimonials
+  const adminSupabase = createAdminClient();
+
+  const { data: testimonials, error: testimonialsError } = await adminSupabase
     .from("testimonials")
     .select("*")
     .eq('user_id', user.id)
     .order("created_at", { ascending: false });
+
+  if (testimonialsError) {
+    console.error("Dashboard: failed to fetch testimonials", testimonialsError);
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
