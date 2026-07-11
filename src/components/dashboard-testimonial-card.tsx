@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Star, User, MessageSquare, Trash2, Edit, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import { deleteTestimonial, updateTestimonial, approveTestimonial, rejectTestimonial } from '@/app/actions';
+import { sanitizeUrl } from '@/lib/sanitize';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -158,9 +159,9 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
         )}
 
         {/* View Post Button placed absolutely in top right */}
-        {t.post_url && (
+        {t.post_url && sanitizeUrl(t.post_url) !== '#' && (
           <a 
-            href={t.post_url} 
+            href={sanitizeUrl(t.post_url)} 
             target="_blank" 
             rel="noreferrer" 
             className="absolute top-5 right-5 flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 group"

@@ -1,6 +1,7 @@
 import { Star, User, MessageSquare } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sanitizeUrl } from "@/lib/sanitize";
 
 // ─── SVG Icons (kept inline to avoid client-component dependencies) ──────────
 
@@ -188,10 +189,11 @@ export default async function WidgetPage({
                 <IconComponent className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0" />
               );
 
-              const isClickable = Boolean(t.post_url);
+              const safePostUrl = sanitizeUrl(t.post_url);
+              const isClickable = Boolean(t.post_url) && safePostUrl !== "#";
               const CardWrapper: any = isClickable ? "a" : "div";
               const wrapperProps = isClickable
-                ? { href: t.post_url, target: "_blank", rel: "noreferrer" }
+                ? { href: safePostUrl, target: "_blank", rel: "noreferrer" }
                 : {};
 
               return (

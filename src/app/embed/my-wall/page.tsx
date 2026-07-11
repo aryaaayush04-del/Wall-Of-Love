@@ -1,5 +1,6 @@
 import { Star, User, MessageSquare } from 'lucide-react';
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sanitizeUrl } from "@/lib/sanitize";
 
 function TwitterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -171,9 +172,10 @@ export default async function EmbedWall(props: Props) {
               const showPlatform = t.platform || t.post_url;
               const iconElement = <IconComponent className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0" />;
 
-              const isClickable = Boolean(t.post_url);
+              const safePostUrl = sanitizeUrl(t.post_url);
+              const isClickable = Boolean(t.post_url) && safePostUrl !== '#';
               const CardWrapper: any = isClickable ? 'a' : 'div';
-              const wrapperProps = isClickable ? { href: t.post_url, target: '_blank', rel: 'noreferrer' } : {};
+              const wrapperProps = isClickable ? { href: safePostUrl, target: '_blank', rel: 'noreferrer' } : {};
 
               return (
                 <CardWrapper
