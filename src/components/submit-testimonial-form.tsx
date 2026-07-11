@@ -46,6 +46,15 @@ export function SubmitTestimonialForm({ userId }: { userId: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Honeypot — invisible to humans, irresistible to bots */}
+      <input
+        type="text"
+        name="website_url"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute w-0 h-0 opacity-0 -z-50 pointer-events-none overflow-hidden"
+      />
       <div className="space-y-4">
         <div className="grid gap-2">
           <Label htmlFor="name">Your Name</Label>

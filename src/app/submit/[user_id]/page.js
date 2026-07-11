@@ -30,7 +30,16 @@ export default async function TestimonialPage({ params }) {
           {/* Hidden: default rating of 5 */}
           <input type="hidden" name="rating" value="5" />
 
-          {/* Customer Name */}
+          {/* Honeypot — invisible to humans, irresistible to bots */}
+          <input
+            type="text"
+            name="website_url"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="absolute w-0 h-0 opacity-0 -z-50 pointer-events-none overflow-hidden"
+          />
+
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="customer_name"
