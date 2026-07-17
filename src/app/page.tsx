@@ -13,10 +13,11 @@ export default function LandingPage() {
           </div>
           Wall of Love
         </div>
-        <Link href="/login">
-          <Button className="bg-ledger text-paper hover:bg-brass hover:text-ledger transition-colors rounded-none h-10 px-6 font-medium">
-            Sign In
-          </Button>
+        <Link 
+          href="/login"
+          className="inline-flex items-center justify-center bg-ledger text-paper hover:bg-brass hover:text-ledger transition-colors rounded-none h-10 px-6 font-medium"
+        >
+          Sign In
         </Link>
       </nav>
 
@@ -42,11 +43,12 @@ export default function LandingPage() {
               <p className="text-xl text-fade max-w-md leading-relaxed font-sans">
                 A single source of truth for your reputation. Collect, verify, and export testimonials for your pitch deck with a literal seal of approval.
               </p>
-              <Link href="/login">
-                <Button className="h-14 px-8 text-lg bg-brass text-ledger hover:bg-ledger hover:text-paper transition-colors duration-300 rounded-none gap-3 group">
-                  Start collecting proof
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+              <Link 
+                href="/login"
+                className="inline-flex items-center justify-center h-14 px-8 text-lg bg-brass text-ledger hover:bg-ledger hover:text-paper transition-colors duration-300 rounded-none gap-3 group"
+              >
+                Start collecting proof
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
@@ -145,10 +147,11 @@ export default function LandingPage() {
           <h2 className="text-5xl font-display font-medium text-ledger text-center mb-10 max-w-2xl">
             Build the reputation ledger your consultancy deserves.
           </h2>
-          <Link href="/login">
-            <Button className="h-16 px-10 text-xl bg-brass text-ledger hover:bg-ledger hover:text-paper transition-colors duration-300 rounded-none gap-4">
-              Get Started
-            </Button>
+          <Link 
+            href="/login"
+            className="inline-flex items-center justify-center h-16 px-10 text-xl bg-brass text-ledger hover:bg-ledger hover:text-paper transition-colors duration-300 rounded-none gap-4"
+          >
+            Get Started
           </Link>
         </section>
       </main>
