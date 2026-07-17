@@ -79,7 +79,7 @@ export async function proxy(request: NextRequest) {
   //    If the user is NOT authenticated and the route is protected,
   //    redirect to /login immediately.
   const isProtectedRoute =
-    pathname === "/" ||
+    pathname.startsWith("/dashboard") ||
     pathname.startsWith("/settings");
 
   if (!user && isProtectedRoute) {
@@ -89,9 +89,9 @@ export async function proxy(request: NextRequest) {
 
   // ── 5. Redirect authenticated users away from /login ─────────────────────
   //    If a logged-in user navigates to /login, send them to the dashboard.
-  if (user && pathname === "/login") {
-    const homeUrl = new URL("/", request.url);
-    return NextResponse.redirect(homeUrl);
+  if (user && (pathname === "/login" || pathname === "/")) {
+    const dashboardUrl = new URL("/dashboard", request.url);
+    return NextResponse.redirect(dashboardUrl);
   }
 
   // ── 6. Return the (possibly cookie-refreshed) response ───────────────────
