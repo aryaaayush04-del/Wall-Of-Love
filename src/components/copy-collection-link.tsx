@@ -31,10 +31,10 @@ export function CopyCollectionLink({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+    <div className="mb-8 p-6 bg-paper rounded-[10px] border border-fade/20 shadow-sm">
       <div className="mb-3">
-        <Label className="text-base font-semibold text-gray-900 dark:text-white">Your Collection Link</Label>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <Label className="text-[16px] font-medium text-ledger">Your Collection Link</Label>
+        <p className="text-[14px] text-fade mt-1">
           Share this public link with your customers to collect new reviews.
         </p>
       </div>
@@ -42,18 +42,18 @@ export function CopyCollectionLink({ userId }: { userId: string }) {
         <Input 
           readOnly 
           value={origin ? link : ''} 
-          className="bg-gray-50 dark:bg-gray-900/50 flex-1 font-mono text-sm text-gray-600 dark:text-gray-300"
+          className="bg-paper border-fade/30 flex-1 font-mono text-[14px] text-ledger placeholder-fade/50 focus:border-brass focus:ring-brass"
           placeholder="Loading link..."
         />
         <Button 
           onClick={handleCopy} 
-          variant="secondary"
-          className="gap-2 min-w-[120px]"
+          variant="outline"
+          className="gap-2 min-w-[120px] border-fade/30 text-ledger hover:bg-fade/10"
         >
           {isCopied ? (
             <>
-              <Check className="h-4 w-4 text-green-600 dark:text-green-500" />
-              <span className="text-green-600 dark:text-green-500">Copied!</span>
+              <Check className="h-4 w-4 text-moss" />
+              <span className="text-moss">Copied!</span>
             </>
           ) : (
             <>

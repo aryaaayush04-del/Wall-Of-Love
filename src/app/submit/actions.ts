@@ -55,7 +55,7 @@ export async function submitTestimonial(formData: FormData) {
       return { error: error.message }
     }
 
-    revalidatePath("/")
+    revalidatePath("/dashboard")
     revalidatePath("/embed/my-wall")
     return { success: true }
   } catch (err: any) {

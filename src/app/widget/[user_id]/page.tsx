@@ -250,6 +250,16 @@ export default async function WidgetPage({
             })}
           </div>
         )}
+
+        <div className="mt-12 flex justify-center">
+          <a href={process.env.NEXT_PUBLIC_APP_URL || "https://walloflove.example.com"} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-full border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-xs font-medium text-gray-500 hover:text-gray-800 group">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B8863B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Verified via Wall of Love
+          </a>
+        </div>
       </div>
     </>
   );

@@ -144,67 +144,62 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
 
   return (
     <>
-      <div className={`bg-white dark:bg-gray-800 p-5 rounded-xl border shadow-sm flex flex-col gap-3 transition-shadow hover:shadow-md relative ${isPending ? 'border-amber-300 dark:border-amber-600' : 'border-gray-200 dark:border-gray-700'}`}>
-        {/* Approval Status Badge */}
-        {isPending ? (
-          <div className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 rounded-full w-fit border border-amber-200 dark:border-amber-700">
-            <Clock className="h-3 w-3" />
-            Pending Approval
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-full w-fit border border-emerald-200 dark:border-emerald-700">
-            <CheckCircle2 className="h-3 w-3" />
-            Approved
-          </div>
-        )}
+      <div className={`bg-paper p-6 rounded-md border shadow-sm flex flex-col gap-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-md relative group ${isPending ? 'border-rust/30' : 'border-fade/20'}`}>
+        
+        {/* Seal Mark (Top Right) */}
+        <div className={`absolute top-4 right-4 h-12 w-12 rounded-full border-2 border-brass flex items-center justify-center transition-opacity duration-300 ${isApproved ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'}`}>
+          <CheckCircle2 className="h-6 w-6 text-brass" />
+        </div>
 
-        {/* View Post Button placed absolutely in top right */}
+        {/* View Post Button placed absolutely in top left if we have a URL */}
         {t.post_url && sanitizeUrl(t.post_url) !== '#' && (
           <a 
             href={sanitizeUrl(t.post_url)} 
             target="_blank" 
             rel="noreferrer" 
-            className="absolute top-5 right-5 flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 group"
+            className="flex items-center gap-1.5 text-[14px] font-medium text-fade hover:text-ledger transition-colors w-fit"
           >
-            <span className="group-hover:text-gray-900 dark:group-hover:text-white">{iconElement}</span>
+            <span className="text-fade">{iconElement}</span>
             View Post
           </a>
         )}
         
-        <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
-            <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <div className="flex items-start gap-3 mt-2">
+          <div className="h-10 w-10 rounded-full bg-fade/10 flex items-center justify-center flex-shrink-0">
+            <User className="h-5 w-5 text-fade" />
           </div>
-          <div className="flex flex-col flex-1 min-w-0 pr-24">
+          <div className="flex flex-col flex-1 min-w-0 pr-16">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 dark:text-white truncate">{t.name}</span>
+              <span className="font-semibold text-ledger text-[16px] truncate">{t.name}</span>
               {/* If no URL but platform is set, just show icon next to name */}
               {showPlatform && !t.post_url && (
-                <span title={t.platform || 'Platform'}>{iconElement}</span>
+                <span title={t.platform || 'Platform'} className="text-fade">{iconElement}</span>
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 truncate">
+            <div className="flex items-center gap-1.5 text-[14px] text-fade truncate font-mono">
               {t.handle && <span className="truncate">{t.handle}</span>}
               {t.handle && formattedDate && <span>•</span>}
               {formattedDate && <span>{formattedDate}</span>}
             </div>
           </div>
         </div>
+        
         <div className="flex gap-0.5">
           {[...Array(5)].map((_, i) => (
-            <Star key={i} className={`h-4 w-4 ${i < t.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+            <Star key={i} className={`h-4 w-4 ${i < t.rating ? 'fill-brass text-brass' : 'text-fade/30'}`} />
           ))}
         </div>
-        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{t.text}</p>
         
-        <div className="mt-2 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between gap-1">
+        <p className="text-ledger text-[16px] leading-relaxed">{t.text}</p>
+        
+        <div className="mt-2 pt-4 border-t border-fade/20 flex items-center justify-between gap-1">
           {/* Approval Actions — left side */}
           <div className="flex items-center gap-1">
             {isPending ? (
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 gap-1.5 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                className="h-8 gap-1.5 text-moss hover:text-moss hover:bg-moss/10 font-sans"
                 onClick={handleApprove}
                 disabled={isApproving}
               >
@@ -215,7 +210,7 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 gap-1.5 text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                className="h-8 gap-1.5 text-rust hover:text-rust hover:bg-rust/10 font-sans"
                 onClick={handleReject}
                 disabled={isRejecting}
               >
@@ -227,11 +222,11 @@ export function DashboardTestimonialCard({ t }: { t: any }) {
 
           {/* Edit & Delete — right side */}
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-gray-500 dark:text-gray-400" onClick={() => setIsEditOpen(true)}>
+            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-fade hover:text-ledger hover:bg-fade/10" onClick={() => setIsEditOpen(true)}>
               <Edit className="h-3.5 w-3.5" />
               Edit
             </Button>
-            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleDelete} disabled={isDeleting}>
+            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-rust hover:bg-rust/10" onClick={handleDelete} disabled={isDeleting}>
               <Trash2 className="h-3.5 w-3.5" />
               {isDeleting ? "..." : "Delete"}
             </Button>

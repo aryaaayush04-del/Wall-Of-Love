@@ -49,7 +49,7 @@ export function AddTestimonialDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="sm" className="gap-2" />}>
+      <DialogTrigger render={<Button size="sm" className="gap-2 bg-ledger text-paper hover:bg-brass hover:text-ledger transition-colors duration-200" />}>
         <Plus className="h-4 w-4" />
         New Testimonial
       </DialogTrigger>
@@ -115,7 +115,7 @@ export function AddTestimonialDialog() {
                     onClick={() => setRating(star)}
                     className="focus:outline-none transition-transform hover:scale-110"
                   >
-                    <Star className={`h-6 w-6 ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                    <Star className={`h-6 w-6 ${star <= rating ? 'fill-brass text-brass' : 'text-fade/30'}`} />
                   </button>
                 ))}
               </div>

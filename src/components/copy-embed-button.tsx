@@ -11,7 +11,7 @@ export function CopyEmbedButton({ userId }: { userId?: string }) {
   };
 
   return (
-    <Button variant="outline" size="sm" className="gap-2" onClick={handleCopyEmbed}>
+    <Button variant="outline" size="sm" className="gap-2 border-fade/30 text-ledger hover:bg-fade/10" onClick={handleCopyEmbed}>
       <Code className="h-4 w-4" />
       Embed Code
     </Button>

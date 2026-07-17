@@ -10,7 +10,7 @@ import { checkSubmissionRateLimit } from "@/lib/ratelimit"
 
 /** Revalidate all paths that display testimonials. */
 function revalidateTestimonialPaths() {
-  revalidatePath("/")
+  revalidatePath("/dashboard")
   revalidatePath("/embed/my-wall")
 }
 

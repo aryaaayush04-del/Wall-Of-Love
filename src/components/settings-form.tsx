@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { updateProfile } from '@/app/actions';
+import { Button } from '@/components/ui/button';
 
 interface ProfileData {
   full_name?: string | null;
@@ -32,7 +33,7 @@ export function SettingsForm({ initialData }: { initialData: ProfileData | null 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="full_name" className="block text-[14px] font-medium text-ledger mb-1.5">
           Full Name
         </label>
         <input
@@ -40,13 +41,13 @@ export function SettingsForm({ initialData }: { initialData: ProfileData | null 
           name="full_name"
           id="full_name"
           defaultValue={initialData?.full_name || ''}
-          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:border-gray-900 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-gray-100 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
+          className="block w-full rounded-sm border border-fade/30 bg-paper text-ledger px-3 py-2 shadow-sm focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass text-[16px] placeholder-fade/50 transition-colors"
           placeholder="Jane Doe"
         />
       </div>
 
       <div>
-        <label htmlFor="website" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="website" className="block text-[14px] font-medium text-ledger mb-1.5">
           Website
         </label>
         <input
@@ -54,13 +55,13 @@ export function SettingsForm({ initialData }: { initialData: ProfileData | null 
           name="website"
           id="website"
           defaultValue={initialData?.website || ''}
-          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:border-gray-900 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-gray-100 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
+          className="block w-full rounded-sm border border-fade/30 bg-paper text-ledger px-3 py-2 shadow-sm focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass text-[16px] placeholder-fade/50 transition-colors"
           placeholder="https://example.com"
         />
       </div>
 
       <div>
-        <label htmlFor="widget_title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="widget_title" className="block text-[14px] font-medium text-ledger mb-1.5">
           Widget Title
         </label>
         <input
@@ -68,24 +69,24 @@ export function SettingsForm({ initialData }: { initialData: ProfileData | null 
           name="widget_title"
           id="widget_title"
           defaultValue={initialData?.widget_title || ''}
-          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:border-gray-900 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-gray-100 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
+          className="block w-full rounded-sm border border-fade/30 bg-paper text-ledger px-3 py-2 shadow-sm focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass text-[16px] placeholder-fade/50 transition-colors"
           placeholder="What people are saying"
         />
       </div>
 
       <div className="flex items-center justify-end gap-4 pt-4">
         {message && (
-          <p className="text-sm font-medium text-green-600 dark:text-green-500">
+          <p className="text-[14px] font-medium text-moss">
             {message}
           </p>
         )}
-        <button
+        <Button
           type="submit"
           disabled={isPending}
-          className="inline-flex justify-center rounded-md border border-transparent bg-gray-900 dark:bg-white py-2 px-4 text-sm font-medium text-white dark:text-gray-900 shadow-sm hover:bg-gray-800 dark:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-ledger text-paper hover:bg-brass hover:text-ledger transition-colors duration-200 shadow-sm"
         >
           {isPending ? 'Saving...' : 'Save Settings'}
-        </button>
+        </Button>
       </div>
     </form>
   );
